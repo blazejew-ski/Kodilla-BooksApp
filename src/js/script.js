@@ -56,7 +56,7 @@
 
   //adding favorites
 
-  const favoriteBooks = [];
+  let favoriteBooks = [];
 
   
 
@@ -65,11 +65,16 @@
 
     for (let bookElement of bookContainer) {
       const bookHREF = bookElement.querySelector(select.bookTemp.cover.href);
-      bookHREF.addEventListener('dblclick', function(event) {   
+      bookHREF.addEventListener('dblclick', function() {   
         bookHREF.id = bookHREF.getAttribute('data-id');
         console.log('bookHREF.i:', bookHREF.id);
 
-        if (favoriteBooks.includes(bookHREF.id)) {}
+        if (favoriteBooks.includes(bookHREF.id)) {
+          bookHREF.classList.remove(select.bookTemp.favorite);
+          favoriteBooks = favoriteBooks.filter(function(e) {
+            return e !== bookHREF.id;
+          });
+        }
         else {
           favoriteBooks.push(bookHREF.id);
           bookHREF.classList.add(select.bookTemp.favorite);
