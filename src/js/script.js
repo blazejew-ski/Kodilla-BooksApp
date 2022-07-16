@@ -10,16 +10,18 @@
     containerOf: {
       list: '.books-list',
     },
-    book: {
+    bookTemp: {
       container: '.book',
       header: {
         title: '.book .book__name',
-        price: '.book product__base-price',
+        price: '.book .product__base-price',
       },
       cover: {
-        img: '.book book__image img',
+        href: '.book__image',
+        img: '.book__image img',
       },
-      rating: '.book book__rating__fill'
+      rating: '.book book__rating__fill',
+      favorite: 'favorite',
     }
   };
 
@@ -27,15 +29,20 @@
     templateBook: Handlebars.compile(document.querySelector(select.templateOf.booksList).innerHTML)
   };  
 
-  function render(){
-    const thisApp = this;
-    thisApp.data  = dataSource;
-    console.log('.thisApp.data', thisApp.data);
-    const books = thisApp.data.books;
+  // global
 
+  const thisApp = this;
+  thisApp.data  = dataSource;
+  console.log('.thisApp.data', thisApp.data);
+  const books = thisApp.data.books;
+ 
+  // rednering books
+
+  function render(){
+    
     for (let book of books) {
 
-      const bookHTMLData = {name: book.name, price: book.price, id: book.id, image: book.image, rating: book.rating}
+      const bookHTMLData = {name: book.name, price: book.price, id: book.id, image: book.image, rating: book.rating};
 
       const generatedHTML = templates.templateBook(bookHTMLData);
       thisApp.element = utils.createDOMFromHTML(generatedHTML);
@@ -47,12 +54,35 @@
 
   render();
 
+  //adding favorites
+
+  const favoriteBooks = [];
+
+  
+
+  function initActions() {
+    const bookContainer = document.querySelectorAll(select.bookTemp.container);
+
+    for (let bookElement of bookContainer) {
+      const bookHREF = bookElement.querySelector(select.bookTemp.cover.href);
+      bookHREF.addEventListener('dblclick', function(event) {   
+        bookHREF.id = bookHREF.getAttribute('data-id');
+        console.log('bookHREF.i:', bookHREF.id);
+
+        if (favoriteBooks.includes(bookHREF.id)) {}
+        else {
+          favoriteBooks.push(bookHREF.id);
+          bookHREF.classList.add(select.bookTemp.favorite);
+        }
+        console.log('favoriteBooks:', favoriteBooks);
+      });
+    }
+
+    
+  }
 
 
-
-
-
-
+  initActions();
 
 
 
