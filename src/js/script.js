@@ -43,7 +43,9 @@
     
     for (let book of books) {
 
-      const bookHTMLData = {name: book.name, price: book.price, id: book.id, image: book.image, rating: book.rating};
+      const ratingWidth = book.rating * 10;
+
+      const bookHTMLData = {name: book.name, price: book.price, id: book.id, image: book.image, rating: book.rating, ratingBgc: determineRatingBGC(ratingWidth), ratingWidth: ratingWidth};
 
       const generatedHTML = templates.templateBook(bookHTMLData);
       thisApp.element = utils.createDOMFromHTML(generatedHTML);
@@ -132,6 +134,28 @@
       console.log(filters);
     }
   }
-}
 
+  function determineRatingBGC(ratingWidth) {
+    let ratingColor = '';
+    console.log('ratingWidth', ratingWidth);
+    if (ratingWidth > 90) {
+      ratingColor = '#C090A6';
+    }
+    else if (ratingWidth > 80 && ratingWidth <= 90) {
+      ratingColor = '#96D3D7';
+    }
+    else if (ratingWidth > 70 && ratingWidth <= 80) {
+      ratingColor = '#DFE5C6';
+    }
+    else if (ratingWidth > 60 && ratingWidth <= 70) {
+      ratingColor = '#FCCBC5';
+    }
+    else  {
+      ratingColor = '#F49B99';
+    } 
+    let ratingBGC = 'linear-gradient(to bottom, ' + ratingColor + ' 0%, ' + ratingColor + ' ' + ratingWidth + '%)';
+    ratingBGC = ratingBGC.toString();
+    return ratingBGC;
+  }
+}
 
