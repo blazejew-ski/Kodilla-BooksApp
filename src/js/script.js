@@ -9,6 +9,7 @@
     },
     containerOf: {
       list: '.books-list',
+      filters: '.filters',
     },
     bookTemp: {
       container: '.book',
@@ -22,7 +23,8 @@
       },
       rating: '.book book__rating__fill',
       favorite: 'favorite',
-    }
+      hidden: 'hidden',
+    },
   };
 
   const templates = {
@@ -33,7 +35,6 @@
 
   const thisApp = this;
   thisApp.data  = dataSource;
-  console.log('.thisApp.data', thisApp.data);
   const books = thisApp.data.books;
  
   // rednering books
@@ -58,14 +59,11 @@
 
   let favoriteBooks = [];
 
-  
-
   function initActions() {    
     document.querySelector(select.containerOf.list).addEventListener('dblclick', function(event) {
       if(event.target.offsetParent.classList.contains('book__image')) {
         const bookHREF = event.target.offsetParent;
         bookHREF.id = bookHREF.getAttribute('data-id');
-        console.log('bookHREF.id:', bookHREF.id);
         if (favoriteBooks.includes(bookHREF.id)) {
           bookHREF.classList.remove(select.bookTemp.favorite);
           favoriteBooks = favoriteBooks.filter(function(e) {
@@ -76,13 +74,64 @@
           favoriteBooks.push(bookHREF.id);
           bookHREF.classList.add(select.bookTemp.favorite);
         }
-        console.log('favoriteBooks:', favoriteBooks);
       }
     }); 
+
+    document.querySelector(select.containerOf.filters).addEventListener('click', function(event) {
+      if(event.target.tagName == 'LABEL' && event.target.firstElementChild.value == 'adults'){
+        if (event.target.firstElementChild.checked === true){
+          filters = filters.filter(function(e) {
+            return e !== event.target.firstElementChild.value;
+          });
+        }
+        if (event.target.firstElementChild.checked === false){
+          filters.push(event.target.firstElementChild.value);
+        }
+        filterbooks();
+      }
+      if(event.target.tagName == 'LABEL' && event.target.firstElementChild.value == 'nonFiction'){
+        if (event.target.firstElementChild.checked === true){
+          filters = filters.filter(function(e) {
+            return e !== event.target.firstElementChild.value;
+          });
+        }
+        if (event.target.firstElementChild.checked === false){
+          filters.push(event.target.firstElementChild.value);
+        }
+        filterbooks();
+      }
+    });
   }
 
   initActions();
 
+  // filters 
+
+  let filters = [];
+
+  function filterbooks() {
+    for (book of books) {
+      let shouldBeHidden = false;
+      const bookId = book.id;
+      const bookFilterSelector = document.querySelector('[data-id="' + bookId + '"]');
+      for (const filter of filters) {
+        if (book.details[filter] === true){
+          shouldBeHidden = true;
+          break;
+        }
+        if (book.details[filter] === false){
+          shouldBeHidden = false;
+        }
+      }
+      if (shouldBeHidden === true) {
+        bookFilterSelector.classList.add(select.bookTemp.hidden);
+      }
+      if (shouldBeHidden === false) {
+        bookFilterSelector.classList.remove(select.bookTemp.hidden);
+      }
+      console.log(filters);
+    }
+  }
 }
 
 
